@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created 2018-7-11 11:35:40
+-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_FILE_DIR" value="${catalina.base:-target}/logs"/>
+    <property name="LOG_FILE_NAME" value="kxy"/>
+    <property name="LOG_FILE_SUFFIX" value="log"/>
+    <property name="LOG_FILE" value="${LOG_FILE_DIR}/${LOG_FILE_NAME}.${LOG_FILE_SUFFIX}"/>
+    <property name="CLIENT_ERROR_LOG_FILE" value="${LOG_FILE_DIR}/kxy-client.${LOG_FILE_SUFFIX}"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_DIR}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.${LOG_FILE_SUFFIX}</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <appender name="CLIENT_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${CLIENT_ERROR_LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_DIR}/kxy-client.%d{yyyy-MM-dd}.${LOG_FILE_SUFFIX}</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <logger name="cn.com.yting" level="INFO">
+        <appender-ref ref="FILE" />
+    </logger>
+    <logger name="cn.com.yting.kxy.web.track.ClientErrorLogger" level="INFO" additivity="false">
+        <appender-ref ref="CLIENT_FILE" />
+    </logger>
+    <logger name="org.springframework.web.socket.messaging.StompSubProtocolHandler" level="OFF"/>
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR"/>
+    <logger name="org.springframework.web.socket.messaging.SubProtocolWebSocketHandler" level="WARN"/>
+<!--    <logger name="cn.com.yting.kxy.web.taptap.TapTapApi" level="DEBUG"/>-->
+<!--    <logger name="cn.com.yting.kxy.web.ad.AdService" level="DEBUG"/>-->
+<!--    <logger name="cn.com.yting.kxy.web.apple.AppleApi" level="DEBUG" />-->
+<!--    <logger name="org.springframework.web" level="TRACE"/>-->
+    <logger name="cn.com.yting.kxy.web.captcha" level="DEBUG"/>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

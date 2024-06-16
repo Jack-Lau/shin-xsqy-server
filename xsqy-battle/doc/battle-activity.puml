@@ -1,0 +1,71 @@
+@startuml
+
+scale 1920 * 1080
+
+start
+
+:战斗开始 ※;
+note right
+    战斗队伍出场(battleStartPartyAttendHandler)
+    记录初期状态(TODO)
+end note
+
+while (达到战斗结束条件？) is (否)
+
+    :增加回合计数;
+    :回合开始 ※;
+    :决定行动顺序，让 Robot 生成行动，生成行动队列;
+    note right
+        Robot 生成指令的时机①
+    end note
+    while (行动机会队列不为空？) is (是)
+        :行动前 ※;
+        note right
+            宠物召唤(PetSummonHandler)
+        end note
+        :取队列中的下一个行动机会;
+        :如果没有行动，让 Robot 生成行动;
+        note right
+            Robot 生成指令的时机②
+        end note
+        :行动修正 ※;
+        note left
+            重新选择目标(ReselectTargetHandler)
+        end note
+        :行动否决 ※;
+        note right
+            死亡行动否决(DeadActionChanceDenyHandler)
+            异常状态行动否决(BuffActionChanceDenyHandler)
+        end note
+        if (可以行动？) then (是)
+            :行动开始 ※;
+            :决定行动处理次数;
+            :消耗处理;
+            partition 行动处理 {
+                :决定最大目标数;
+                :决定最终主目标，副目标集;
+                :决定攻击次数;
+                :对主目标和副目标进行攻击次数次效果处理;
+                :死亡处理;
+            }
+            :行动结束 ※;
+        endif
+        :检查战斗结束条件 ※;
+        note right
+            一方全灭(AllDeadBattleEndHandler)
+        end note
+    endwhile (否)
+
+    :回合结束 ※;
+    note right
+        怒气回复(SpRecoverHandler)
+    end note
+    :检查战斗结束条件II ※;
+    note right
+        到达回合限制(TurnLimitedBattleEndHandler)
+    end note
+endwhile (是)
+:战斗结束 ※;
+stop
+
+@enduml

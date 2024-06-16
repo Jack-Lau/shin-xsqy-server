@@ -1,0 +1,43 @@
+@startuml
+
+[*] --> BEFORE_BATTLE
+BEFORE_BATTLE : entry / 发送 SYN(BEFORE_BATTLE, battleSessionInfo)
+BEFORE_BATTLE : 设置定时器
+BEFORE_BATTLE : event / 接收 ACK(BEFORE_BATTLE) [不是全部客户端都已发送]
+BEFORE_BATTLE : exit / 销毁定时器
+BEFORE_BATTLE --> CLEAN : 超时 / 设置战斗为异常结束
+BEFORE_BATTLE --> PREPARED : 接收 ACK(BEFORE_BATTLE) [全部客户端都已发送]
+PREPARED : entry / 发送 SYN(PREPARED, BattleInitInfo)
+PREPARED : 设置定时器
+PREPARED : event / 接收 ACK(PREPARED) [不是全部客户端都已发送]
+PREPARED : exit / 销毁定时器
+PREPARED --> BEFORE_TURN : 接收 ACK(PREPARED) [全部客户端都已发送]
+PREPARED --> BEFORE_TURN : 超时 / 将未发送的客户端设为 lost
+BEFORE_TURN : entry / 发送 SYN(BEFORE_TURN, TurnInitInfo)
+BEFORE_TURN : 设置定时器
+BEFORE_TURN : event / 接收 ACK(BEFORE_TURN, action) [不是全部客户端都已发送]
+BEFORE_TURN : exit / 销毁定时器
+BEFORE_TURN --> IN_TURN : 接收 ACK(BEFORE_TURN, action) [全部客户端都已发送]
+BEFORE_TURN --> IN_TURN : 超时 / 将未发送的客户端设为 lost
+IN_TURN : entry / battleDirector.nextTurn()
+IN_TURN --> AFTER_TURN : [战斗未结束]
+IN_TURN --> AFTER_BATTLE : [战斗已结束]
+AFTER_TURN : entry / 发送 SYN(AFTER_TURN, TurnInfo)
+AFTER_TURN : 设置定时器
+AFTER_TURN : event / 接收 ACK(AFTER_TURN)  [不是全部客户端都已发送]
+AFTER_TURN : exit / 销毁定时器
+AFTER_TURN --> BEFORE_TURN : 接收 ACK(AFTER_TURN)  [全部客户端都已发送]
+AFTER_TURN --> BEFORE_TURN : 超时 / 将未发送的客户端设为 lost
+AFTER_BATTLE : entry / 发送 SYN(AFTER_BATTLE, TurnInfo)
+AFTER_BATTLE : 设置定时器
+AFTER_BATTLE : 设置战斗为正常结束
+AFTER_BATTLE : event / 接收 ACK(AFTER_BATTLE)  [不是全部客户端都已发送]
+AFTER_BATTLE : exit / 销毁定时器
+AFTER_BATTLE --> CLEAN : 接收 ACK(AFTER_BATTLE)  [全部客户端都已发送]
+AFTER_BATTLE --> CLEAN : 超时
+CLEAN : entry / 发送战斗结束
+CLEAN : 调用战斗结束处理器
+CLEAN : 清理 battleSession
+CLEAN --> [*]
+
+@enduml

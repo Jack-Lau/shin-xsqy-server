@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-deploy-to-138</actionName>
+            <displayName>deploy-to-138</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>tomcat7:redeploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>deploy-to-138</activatedProfile>
+                <activatedProfile>use-mysql</activatedProfile>
+                <activatedProfile>datasource-138-local</activatedProfile>
+            </activatedProfiles>
+        </action>
+    </actions>

@@ -1,0 +1,51 @@
+
+@startuml
+
+scale 1920 * 1080
+
+class BattleDirector{
+    proccessAction(action)
+}
+
+BattleDirector --> Action: <<process>>
+BattleDirector ..|> Recorder
+
+class Unit{
+    Record takeAffect(Affect)
+}
+
+Unit ..> Affect
+Unit --> Recorder
+
+class Skill{
+    name
+    Action createAction(攻击者, target, allyParty, rivalParty)
+}
+
+Skill --> Action: <<create>>
+
+class Action{
+    perform()
+}
+
+Action ..> Affect
+Action ..> Unit
+
+class Affect <<immutable>>{
+    Record affect(Unit target)
+}
+
+Affect ..> Unit
+Affect --> Record: <<create>>
+
+class Record{
+    type
+}
+
+interface Recorder{
+    addRecord(Record)
+}
+
+Recorder --> Record
+
+@enduml

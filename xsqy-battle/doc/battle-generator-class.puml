@@ -1,0 +1,16 @@
+
+@startuml
+
+scale 1920 * 1080
+
+class UnitDescriptor{
+    Map<String, String> parameterExprMap
+    UnitBuilder export(UnitBuilder, Binding)
+}
+
+class PartyDescriptor{
+    Map<Integer, RandomSelector<UnitDescriptor>> selectorMap
+    PartyBuilder export(PartyBuilder, PartyStastics)
+}
+
+@enduml

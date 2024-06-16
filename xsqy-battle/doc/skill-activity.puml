@@ -1,0 +1,24 @@
+@startuml
+
+scale 1920 * 1080
+
+start
+if (可以施放？) then (是)
+    if (技能目标正确？) then (否)
+        :重新选择目标;
+        if (能选择到至少一个有效的目标？) then (否)
+            :释放失败;
+            stop
+        endif
+    endif
+    partition "技能脚本-行为"{
+        :选择额外的目标;
+        :处理消耗;
+        :对每一个目标造成效果;
+    }
+else (否)
+    :释放失败;
+endif
+end
+
+@enduml
